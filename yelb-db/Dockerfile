@@ -1,5 +1,6 @@
-FROM postgres:10.0
-MAINTAINER massimo@it20.info
+FROM postgres:10.9-alpine
+MAINTAINER uhoelscher@pivotal.io
+LABEL author="massimo@it20.info, uhoelscher@pivotal.io"
 
 WORKDIR /
 
