@@ -1,4 +1,10 @@
 ---
+resource_types:
+  - name: email
+    type: docker-image
+    source:
+      repository: pcfseceng/email-resource
+
 resources:
   - name: yelb-github
     type: git
@@ -27,6 +33,18 @@ resources:
       username: ((harbor-user))
       password: ((harbor-password))
       repository: ((harbor-repo))/yelb-appserver
+  
+  - name: send-an-email
+    type: email
+    source: 
+      from: ((mail-from))
+      smtp: 
+        host: ((mail-host))
+        port: ((mail-port))
+        username: ((mail-user))
+        password: ((mail-password))
+      to: [ ((mail-recipient)) ]
+
 
 jobs:
   - name: build-containers
@@ -44,3 +62,23 @@ jobs:
       - put: appserver-image
         params:
           build: ./yelb-github/yelb-appserver
+
+    on_error:
+      do:
+        - put: send-an-email
+          params:
+            body_text: 'Build error in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
+            subject_text: 'Build error in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
+    on_failure:
+      do:
+        - put: send-an-email
+          params:
+            body_text: 'Build failure in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
+            subject_text: 'Build failure in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}' 
+    on_success:
+      do:
+        - put: send-an-email
+          params:
+            body_text: 'Build success in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
+            subject_text: 'Build success in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
+
