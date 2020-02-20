@@ -7,21 +7,40 @@ resources:
       uri: https://github.com/devulrix/yelb.git
       branch: master
 
-  - name: yelb-db-image
+  - name: db-image
     type: docker-image
     source:
-      email: ((harbor-mail))
       username: ((harbor-user))
       password: ((harbor-password))
       repository: ((harbor-repo))/yelb-db
 
+  - name: ui-image
+    type: docker-image
+    source:
+      username: ((harbor-user))
+      password: ((harbor-password))
+      repository: ((harbor-repo))/yelb-ui
+
+  - name: appserver-image
+    type: docker-image
+    source:
+      username: ((harbor-user))
+      password: ((harbor-password))
+      repository: ((harbor-repo))/yelb-appserver
+
 jobs:
-  - name: clone
+  - name: build-containers
     public: false
     serial: true
     plan: 
       - get: yelb-github
         trigger: true
-      - put: yelb-db-image
+      - put: db-image
         params:
-          build: yelb-db 
+          build: ./yelb-github/yelb-db 
+      - put: ui-image
+        params:
+          build: ./yelb-github/yelb-ui
+      - put: appserver-image
+        params:
+          build: ./yelb-github/yelb-appserver
