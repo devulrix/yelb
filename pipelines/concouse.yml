@@ -4,6 +4,11 @@ resource_types:
     type: docker-image
     source:
       repository: pcfseceng/email-resource
+  
+  - name: k8s
+    type: docker-image
+    source:
+      repository: frodenas/k8s-resource
 
 resources:
   - name: yelb-github
@@ -33,6 +38,14 @@ resources:
       username: ((harbor-user))
       password: ((harbor-password))
       repository: ((harbor-repo))/yelb-appserver
+  
+  - name: pks-k8s
+    type: k8s
+    source:
+      url: ((k8s-url))
+      username: ((k8s-username))
+      password: ((k8s-password))
+      namespace: ((k8s-namespace))
   
   - name: send-an-email
     type: email
@@ -75,10 +88,31 @@ jobs:
           params:
             body_text: 'Build failure in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
             subject_text: 'Build failure in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}' 
+    
+  - name: push-to-pks
+    public: false
+    serial: true
+    plan:
+      - put: pks-k8s
+        params:
+          spec_path: ./yelb-github/deployments/platformdeployment/Kubernetes/yaml/pks-yelb-lb-harbor.yaml
+
+    on_error:
+      do:
+        - put: send-an-email
+          params:
+            body_text: 'Build error in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
+            subject_text: 'Build error in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
+    on_failure:
+      do:
+        - put: send-an-email
+          params:
+            body_text: 'Build failure in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
+            subject_text: 'Build failure in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}' 
+    
     on_success:
       do:
         - put: send-an-email
           params:
             body_text: 'Build success in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
             subject_text: 'Build success in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
-
