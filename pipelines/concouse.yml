@@ -43,9 +43,8 @@ resources:
     type: k8s
     source:
       url: ((k8s-url))
-      username: ((k8s-username))
-      password: ((k8s-password))
-      namespace: ((k8s-namespace))
+      skip_tls_verify: true
+      token: ((k8s-token))
   
   - name: send-an-email
     type: email
@@ -65,7 +64,7 @@ jobs:
     serial: true
     plan: 
       - get: yelb-github
-        trigger: true
+        trigger: false
       - put: db-image
         params:
           build: ./yelb-github/yelb-db 
@@ -93,6 +92,7 @@ jobs:
     public: false
     serial: true
     plan:
+      - get: yelb-github
       - put: pks-k8s
         params:
           spec_path: ./yelb-github/deployments/platformdeployment/Kubernetes/yaml/pks-yelb-lb-harbor.yaml
