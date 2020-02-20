@@ -1,4 +1,4 @@
-FROM ruby:2.4.6-alpine3.10
+FROM ruby:2.4.9-alpine3.11
 MAINTAINER uhoelscher@pivotal.io
 
 ################## BEGIN INSTALLATION ######################

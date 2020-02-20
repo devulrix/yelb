@@ -1,4 +1,4 @@
-FROM node:10.9.0
+FROM node:10.19.0
 MAINTAINER massimo@it20.info
 
 WORKDIR /
@@ -31,7 +31,7 @@ RUN ng build --environment=test --output-path=./test/dist/
 RUN ng build --environment=dev --output-path=./dev/dist/
 
 
-FROM nginx:1.17.1-alpine
+FROM nginx:1.17.8-alpine
 MAINTAINER massimo@it20.info
 
 WORKDIR /
