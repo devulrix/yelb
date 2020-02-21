@@ -45,6 +45,8 @@ resources:
       url: ((k8s-url))
       skip_tls_verify: true
       token: ((k8s-token))
+      namespace: ((k8s-namespace))
+      debug: true
   
   - name: send-an-email
     type: email
@@ -59,18 +61,32 @@ resources:
 
 
 jobs:
-  - name: build-containers
+  - name: build-db-image
     public: false
     serial: true
     plan: 
       - get: yelb-github
-        trigger: false
+        trigger: true
       - put: db-image
         params:
           build: ./yelb-github/yelb-db 
+  
+  - name: build-ui-image
+    public: false
+    serial: true
+    plan:
+      - get: yelb-github
+        trigger: true
       - put: ui-image
         params:
           build: ./yelb-github/yelb-ui
+
+  - name: build-appserver-image
+    public: false
+    serial: true
+    plan:
+      - get: yelb-github
+        trigger: true
       - put: appserver-image
         params:
           build: ./yelb-github/yelb-appserver
@@ -93,13 +109,15 @@ jobs:
     serial: true
     plan:
       - get: yelb-github
-        passed: [build-containers]
       - get: db-image
-        passed: [build-containers]
+        trigger: true
+        passed: [build-db-image]
       - get: ui-image
-        passed: [build-containers]
+        trigger: true
+        passed: [build-ui-image]
       - get: appserver-image
-        passed: [build-containers]
+        trigger: true
+        passed: [build-appserver-image]
       - put: pks-k8s
         params:
           spec_path: ./yelb-github/deployments/platformdeployment/Kubernetes/yaml/pks-yelb-lb-harbor.yaml
