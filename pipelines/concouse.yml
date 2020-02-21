@@ -93,6 +93,13 @@ jobs:
     serial: true
     plan:
       - get: yelb-github
+        passed: [build-containers]
+      - get: db-image
+        passed: [build-containers]
+      - get: ui-image
+        passed: [build-containers]
+      - get: appserver-image
+        passed: [build-containers]
       - put: pks-k8s
         params:
           spec_path: ./yelb-github/deployments/platformdeployment/Kubernetes/yaml/pks-yelb-lb-harbor.yaml
