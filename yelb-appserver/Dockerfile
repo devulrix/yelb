@@ -17,6 +17,7 @@ ENV RACK_ENV=production
 
 RUN gem install sinatra 
 RUN gem install redis 
+RUN gem install aws-sdk-dynamodb
 ### hack to allow the setup of the pg gem (which would fail otherwise)
 RUN apk add --no-cache --update build-base \
                                 linux-headers \
