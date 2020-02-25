@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 NGINX_CONF=/etc/nginx/conf.d/default.conf
 cd clarity-seed
 
