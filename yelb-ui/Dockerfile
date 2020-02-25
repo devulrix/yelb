@@ -1,5 +1,6 @@
 FROM node:10.19.0
-MAINTAINER massimo@it20.info
+MAINTAINER uhoelscher@pivotal.io
+LABEL author="uhoelscher@pivotal.io"
 
 WORKDIR /
 

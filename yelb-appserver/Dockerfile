@@ -1,5 +1,6 @@
 FROM ruby:2.4.9-alpine3.11
 MAINTAINER uhoelscher@pivotal.io
+LABEL author="uhoelscher@pivotal.io"
 
 ################## BEGIN INSTALLATION ######################
 
@@ -30,5 +31,3 @@ ADD startup.sh startup.sh
 ##################### INSTALLATION END #####################
 
 CMD ["./startup.sh"]
-
-
