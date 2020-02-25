@@ -59,6 +59,16 @@ resources:
         password: ((mail-password))
       to: [ ((mail-recipient)) ]
 
+# groups:
+# - name: build
+#   jobs:
+#   - build-db-image
+#   - build-ui-image
+#   - build-appserver-image
+# - name: test
+#   jobs:
+#   - push-to-pks
+
 
 jobs:
   - name: build-db-image
@@ -70,6 +80,18 @@ jobs:
       - put: db-image
         params:
           build: ./yelb-github/yelb-db 
+    on_error:
+      do:
+        - put: send-an-email
+          params:
+            body_text: 'Build error in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
+            subject_text: 'Build error in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
+    on_failure:
+      do:
+        - put: send-an-email
+          params:
+            body_text: 'Build failure in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
+            subject_text: 'Build failure in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}' 
   
   - name: build-ui-image
     public: false
@@ -80,6 +102,18 @@ jobs:
       - put: ui-image
         params:
           build: ./yelb-github/yelb-ui
+    on_error:
+      do:
+        - put: send-an-email
+          params:
+            body_text: 'Build error in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
+            subject_text: 'Build error in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
+    on_failure:
+      do:
+        - put: send-an-email
+          params:
+            body_text: 'Build failure in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}'
+            subject_text: 'Build failure in concourse: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}' 
 
   - name: build-appserver-image
     public: false
@@ -109,18 +143,19 @@ jobs:
     serial: true
     plan:
       - get: yelb-github
-      - get: db-image
+        passed:
+        - build-db-image
+        - build-ui-image
+        - build-appserver-image
         trigger: true
-        passed: [build-db-image]
-      - get: ui-image
-        trigger: true
-        passed: [build-ui-image]
-      - get: appserver-image
-        trigger: true
-        passed: [build-appserver-image]
+      # - task: pks-get-kubeconfig
+      #   file: pipelines/tasks/pks-get-kubeconfig.yml
+        #inputs: [{user: ((k8s-username)), password: ((k8s-password))}]
+        #outputs: [{k8s-token: token}]
       - put: pks-k8s
         params:
-          spec_path: ./yelb-github/deployments/platformdeployment/Kubernetes/yaml/pks-yelb-lb-harbor.yaml
+          token: 
+          spec_path: yelb-github/deployments/platformdeployment/Kubernetes/yaml/pks-yelb-lb-harbor.yaml
 
     on_error:
       do:
