@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # when the variable is populated a search domain entry is added to resolv.conf at startup
 # this is needed for the ECS service discovery (a search domain can't be added with awsvpc mode) 
