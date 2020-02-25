@@ -33,7 +33,8 @@ RUN ng build --environment=dev --output-path=./dev/dist/
 
 
 FROM nginx:1.17.8-alpine
-MAINTAINER massimo@it20.info
+MAINTAINER uhoelscher@pivotal.io
+LABEL author="uhoelscher@pivotal.io"
 
 WORKDIR /
 ADD startup.sh startup.sh
