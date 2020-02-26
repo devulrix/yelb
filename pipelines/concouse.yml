@@ -70,17 +70,6 @@ resources:
         password: ((mail-password))
       to: [ ((mail-recipient)) ]
 
-# groups:
-# - name: build
-#   jobs:
-#   - build-db-image
-#   - build-ui-image
-#   - build-appserver-image
-# - name: test
-#   jobs:
-#   - push-to-pks
-
-
 jobs:
   - name: build-db-image
     public: false
