@@ -119,6 +119,8 @@ jobs:
       - put: ui-image
         params:
           build: ./yelb-github/yelb-ui
+          tag_as_latest: true
+          tag_file: version/version
     on_error:
       do:
         - put: send-an-email
@@ -143,6 +145,8 @@ jobs:
       - put: appserver-image
         params:
           build: ./yelb-github/yelb-appserver
+          tag_as_latest: true
+          tag_file: version/version
 
     on_error:
       do:
