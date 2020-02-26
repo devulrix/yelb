@@ -11,6 +11,17 @@ resource_types:
       repository: frodenas/k8s-resource
 
 resources:
+  - name: version
+    type: semver
+    source:
+      driver: s3
+      initial_version: 0.7.0
+      key: yelb
+      endpoint: https://store.s3.uhtec.dev
+      access_key_id: ((s3-access-key-id))
+      secret_access_key: ((s3-secret-access-key))
+      bucket: ((verion-s3-bucket))
+
   - name: yelb-github
     type: git
     icon: github-circle
@@ -77,9 +88,13 @@ jobs:
     plan: 
       - get: yelb-github
         trigger: true
+      - get: version
+        params: {bump: patch}
       - put: db-image
         params:
           build: ./yelb-github/yelb-db 
+          tag_as_latest: true
+          tag_file: version/version
     on_error:
       do:
         - put: send-an-email
@@ -99,6 +114,8 @@ jobs:
     plan:
       - get: yelb-github
         trigger: true
+      - get: version
+        params: {bump: patch}
       - put: ui-image
         params:
           build: ./yelb-github/yelb-ui
@@ -121,6 +138,8 @@ jobs:
     plan:
       - get: yelb-github
         trigger: true
+      - get: version
+        params: {bump: patch}
       - put: appserver-image
         params:
           build: ./yelb-github/yelb-appserver
