@@ -4,11 +4,6 @@ resource_types:
     type: docker-image
     source:
       repository: pcfseceng/email-resource
-  
-  - name: k8s
-    type: docker-image
-    source:
-      repository: frodenas/k8s-resource
 
 resources:
   - name: version
@@ -49,15 +44,6 @@ resources:
       username: ((harbor-user))
       password: ((harbor-password))
       repository: ((harbor-repo))/yelb-appserver
-  
-  - name: pks-k8s
-    type: k8s
-    source:
-      url: ((k8s-url))
-      skip_tls_verify: true
-      token: ((k8s-token))
-      namespace: ((k8s-namespace))
-      debug: true
   
   - name: send-an-email
     type: email
@@ -160,14 +146,14 @@ jobs:
         - build-ui-image
         - build-appserver-image
         trigger: true
-      # - task: pks-get-kubeconfig
-      #   file: pipelines/tasks/pks-get-kubeconfig.yml
-        #inputs: [{user: ((k8s-username)), password: ((k8s-password))}]
-        #outputs: [{k8s-token: token}]
-      - put: pks-k8s
+      - task: pks-get-kubeconfig
+        file: yelb-github/pipelines/tasks/pks-get-kubeconfig.yml
         params:
-          token: 
-          spec_path: yelb-github/deployments/platformdeployment/Kubernetes/yaml/pks-yelb-lb-harbor.yaml
+          PKS: ((use-pks))
+          PKS_USERNAME: ((k8s-username))
+          PKS_PASSWORD: ((k8s-password))
+          PKS_CLUSTER: ((k8s-cluster))
+          K8S_NAMESPACE: ((k8s-namespace))
 
     on_error:
       do:
