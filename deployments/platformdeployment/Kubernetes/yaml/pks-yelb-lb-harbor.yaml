@@ -80,7 +80,7 @@ spec:
     spec:
       containers:
       - name: yelb-ui
-        image: harbor.lab.uhtec.de/demo-private/yelb-ui:0.7
+        image: harbor.lab.uhtec.de/demo-private/yelb-ui
         ports:
         - containerPort: 80
       imagePullSecrets:
@@ -101,7 +101,7 @@ spec:
     spec:
       containers:
       - name: redis-server
-        image: harbor.lab.uhtec.de/demo/redis:5.0.5-alpine
+        image: harbor.lab.uhtec.de/demo/redis:5.0.7-alpine
         ports:
         - containerPort: 6379
 ---
@@ -120,7 +120,7 @@ spec:
     spec:
       containers:
       - name: yelb-db
-        image: harbor.lab.uhtec.de/demo-private/yelb-db:0.6
+        image: harbor.lab.uhtec.de/demo-private/yelb-db
         ports:
         - containerPort: 5432
       imagePullSecrets:
@@ -141,7 +141,7 @@ spec:
     spec:
       containers:
       - name: yelb-appserver
-        image: harbor.lab.uhtec.de/demo-private/yelb-appserver:0.6
+        image: harbor.lab.uhtec.de/demo-private/yelb-appserver
         imagePullPolicy: Always
         ports:
         - containerPort: 4567
