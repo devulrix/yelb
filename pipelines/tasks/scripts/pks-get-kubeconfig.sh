@@ -1,6 +1,6 @@
 #!/usr/env bash 
 
-# this script is used to get the kubeconfig via pks cli  
+# this script is used to get the kubeconfig via pks cli   
 
 set -o errexit
 set -o nounset
