@@ -6,7 +6,7 @@ set -o errexit
 set -o nounset
 
 main () {
-    if [ $PKS ] then
+    if [ $PKS ]; then
         fetch_pks
     elif [ -n $KUBE_CONFIG ]; then
         fetch_kubeconfig
