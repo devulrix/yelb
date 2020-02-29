@@ -18,7 +18,8 @@ main () {
 }
 
 fetch_pks() {
-    pks get-credentials $PKS_CLUSTER -u $PKS_USERNAME -p $PKS_PASSWORD -k
+    pks login pks.lab.uhtec.de -u $PKS_USERNAME -p $PKS_PASSWORD -k
+    pks get-credentials $PKS_CLUSTER 
 
     if [[ -f ~/.kube/config ]]; then
         return 0
