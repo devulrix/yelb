@@ -14,7 +14,7 @@ main () {
         echo "Error: You need to specify either PKS or provide a KUBE_CONFIG"
     fi
 
-
+    deploy
 }
 
 fetch_pks() {
@@ -45,10 +45,11 @@ fetch_pks() {
 
     kubectl config set-credentials $PKS_USERNAME --auth-provider-arg=refresh-token=$(cat token.json | jq -r .refresh_token) --kubeconfig=./config.json
 
-    if [[ -f config ]]; then
+    if [[ -f config.json ]]; then
         return 0
     else 
         echo "Error: PKS cloud not fetch kube config "
+        return -1
     fi
 }
 
