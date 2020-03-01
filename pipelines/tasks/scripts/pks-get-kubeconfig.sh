@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash 
 
 # this script is used to get the kubeconfig via pks cli   
 
