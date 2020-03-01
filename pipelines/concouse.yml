@@ -150,6 +150,7 @@ jobs:
         file: yelb-github/pipelines/tasks/pks-get-kubeconfig.yml
         params:
           PKS: ((use-pks))
+          PKS_API: ((pks-api))
           PKS_USERNAME: ((k8s-username))
           PKS_PASSWORD: ((k8s-password))
           PKS_CLUSTER: ((k8s-cluster))
