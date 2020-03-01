@@ -45,7 +45,7 @@ fetch_pks() {
 
     kubectl config set-credentials $PKS_USERNAME --auth-provider-arg=refresh-token=$(cat token.json | jq -r .refresh_token) --kubeconfig=./config.json
 
-    if [[ -f config.json ]]; then
+    if [ -f config.json ]; then
         return 0
     else 
         echo "Error: PKS cloud not fetch kube config "
@@ -56,7 +56,7 @@ fetch_pks() {
 fetch_kubeconfig() {
     mkdir -p ~/.kube
 
-    if [[ -f ~/.kube/config ]]; then
+    if [ -f ~/.kube/config ]; then
         return 0
     fi
 
