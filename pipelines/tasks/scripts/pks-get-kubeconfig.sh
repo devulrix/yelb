@@ -46,6 +46,7 @@ fetch_pks() {
     kubectl config set-credentials $PKS_USERNAME --auth-provider-arg=refresh-token=$(cat token.json | jq -r .refresh_token) --kubeconfig=./config.json
 
     if [ -f config.json ]; then
+        cp config.json yelb-deployment
         return 0
     else 
         echo "Error: PKS cloud not fetch kube config "
@@ -70,6 +71,8 @@ fetch_kubeconfig() {
 
 deploy() {
     kubectl apply -f yelb-github/deployments/platformdeployment/Kubernetes/yaml/pks-yelb-lb-harbor.yaml -n $K8S_NAMESPACE --kubeconfig=./config.json
+
+    kubectl get service -n yelb -o jsonpath='{$.items[*].status.loadBalancer.ingress[0].ip}' > yelb-deployment/yelb-ip
 }
 
 main
