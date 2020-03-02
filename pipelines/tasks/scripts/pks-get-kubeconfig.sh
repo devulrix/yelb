@@ -72,7 +72,7 @@ fetch_kubeconfig() {
 deploy() {
     kubectl apply -f yelb-github/deployments/platformdeployment/Kubernetes/yaml/pks-yelb-lb-harbor.yaml -n $K8S_NAMESPACE --kubeconfig=./config.json
 
-    kubectl get service -n yelb -o jsonpath='{$.items[*].status.loadBalancer.ingress[0].ip}' > yelb-deployment/yelb-ip
+    kubectl get service -n yelb -o jsonpath='{$.items[*].status.loadBalancer.ingress[0].ip}' --kubeconfig=./config.json > yelb-deployment/yelb-ip
 }
 
 main
