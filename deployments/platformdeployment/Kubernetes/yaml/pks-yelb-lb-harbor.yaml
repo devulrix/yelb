@@ -65,7 +65,7 @@ spec:
     app: yelb-ui
     tier: frontend
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: yelb-ui
@@ -86,7 +86,7 @@ spec:
       imagePullSecrets:
       - name: regcred
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis-server
@@ -105,7 +105,7 @@ spec:
         ports:
         - containerPort: 6379
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: yelb-db
@@ -126,7 +126,7 @@ spec:
       imagePullSecrets:
       - name: regcred
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: yelb-appserver
